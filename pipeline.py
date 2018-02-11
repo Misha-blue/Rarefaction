@@ -1,15 +1,14 @@
 import argparse
 import base64
-import os
-import gzip
-import random
-import docker
-import shutil
 import json
-
-from io import StringIO
-import pandas as pd
 import logging as log
+import os
+import random
+import shutil
+from io import StringIO
+
+import docker
+import pandas as pd
 from skbio.stats.distance import mantel
 
 
@@ -30,13 +29,13 @@ def main():
 
     mantel_coef_array = []
     read_count = []
-    read_numbers = [500, 1500, 5000, 10000, 15000, 30000, 50000, 100000]
+    read_numbers = [500, 5000, 50000, 500000, 1000000, 5000000, 10000000, 20000000, 40000000]
 
     for read_number in read_numbers:
         try:
             os.mkdir(output_dir)
             log.info("reads_number {}".format(read_number))
-            sampling_reads(input_dir, output_dir, read_number, sample_number=10)
+            sampling_reads(input_dir, output_dir, read_number, sample_number=20)
             run_analysis("primary", "kmerprimary:1.0.0", output_dir)
             run_analysis("secondary", "kmersecondary:2.0.1", output_dir)
             mantel_array = get_coef_array(output_dir)
@@ -63,7 +62,7 @@ def sampling_reads(input_dir, output_dir, read_number, sample_number=10):
         os.mkdir(os.path.join(output_dir, str(index)))
 
     for filename in files_array:
-        with gzip.open(os.path.join(input_dir, filename), 'rb') as input_file:
+        with open(os.path.join(input_dir, filename), 'rb') as input_file:
             num_lines = sum([1 for line in input_file])
         total_records = int(num_lines / 4)
 
@@ -71,11 +70,11 @@ def sampling_reads(input_dir, output_dir, read_number, sample_number=10):
         output_sequence_sets = []
 
         for i in range(sample_number):
-            output_files.append(open(os.path.join(output_dir, str(i), filename[:-9]) + "_" + str(i) + ".fastq", "w"))
+            output_files.append(open(os.path.join(output_dir, str(i), filename[:-6]) + "_" + str(i) + ".fastq", "w"))
             output_sequence_sets.append(set(random.sample(range(total_records + 1), read_number)))
 
         record_number = 0
-        with gzip.open(os.path.join(input_dir, filename), 'rb') as input_file:
+        with open(os.path.join(input_dir, filename), 'rb') as input_file:
             for line1 in input_file:
                 line2 = next(input_file)
                 line3 = next(input_file)
@@ -92,7 +91,7 @@ def sampling_reads(input_dir, output_dir, read_number, sample_number=10):
 
         for output in output_files:
             output.close()
-        log.info("Finish sampling")
+    log.info("Finish sampling")
 
 
 def run_analysis(analysis, image, input_dir):
