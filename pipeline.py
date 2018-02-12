@@ -27,7 +27,6 @@ def main():
     input_dir, output_dir = get_arguments()
     shutil.rmtree(output_dir)
 
-    mantel_coef_array = []
     read_count = []
     read_numbers = [500, 5000, 50000, 500000, 1000000, 5000000, 10000000, 20000000, 40000000]
 
@@ -40,17 +39,17 @@ def main():
             run_analysis("secondary", "kmersecondary:2.0.1", output_dir)
             mantel_array = get_coef_array(output_dir)
             log.info("Finish mantel analysis")
-            mantel_coef_array.extend(mantel_array)
+
             for i in range(len(mantel_array)):
                 read_count.append(read_number)
+
+            with open("results.txt", "a") as f:
+                f.write(str(mantel_array) + "\n")
+                f.write(str(read_count) + "\n")
             shutil.rmtree(output_dir)
         except:
             log.info("Read number > reads in sample")
 
-    log.info('Saving report')
-    with open("results.txt", "w") as f:
-        f.write(str(mantel_coef_array) + "\n")
-        f.write(str(read_count) + "\n")
     log.info('Finished')
 
 
