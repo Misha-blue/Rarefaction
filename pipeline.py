@@ -20,9 +20,11 @@ def get_arguments():
     return results.input_dir, results.output_dir
 
 
-def main():
+def main(inputdir, outputdir):
     log.basicConfig(level=log.INFO)
     log.info('Start')
+    with open("results.txt", "w") as f:
+        f.write("")
 
     input_dir, output_dir = get_arguments()
     shutil.rmtree(output_dir)
@@ -144,4 +146,4 @@ def get_data_frame_from_bytes(string):
 
 
 if __name__ == "__main__":
-    main()
+    main(inputdir, outputdir)
