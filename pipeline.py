@@ -20,8 +20,8 @@ def get_arguments():
     return results.input_dir, results.output_dir
 
 
-def main(inputdir, outputdir):
-    log.basicConfig(level=log.INFO)
+def main():
+    log.basicConfig(level=log.INFO, filename="log_rarefaction.txt")
     log.info('Start')
     with open("results.txt", "w") as f:
         f.write("")
@@ -146,4 +146,4 @@ def get_data_frame_from_bytes(string):
 
 
 if __name__ == "__main__":
-    main(inputdir, outputdir)
+    main()
