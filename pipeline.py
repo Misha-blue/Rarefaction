@@ -29,11 +29,11 @@ def main():
     input_dir, output_dir = get_arguments()
     shutil.rmtree(output_dir)
 
-    read_count = []
-    read_numbers = [500, 5000, 50000, 500000, 1000000, 5000000, 10000000, 20000000, 40000000]
+    read_numbers = [50, 100, 200, 500, 1000, 1500, 2000, 5000]
 
     for read_number in read_numbers:
         try:
+            read_count = []
             os.mkdir(output_dir)
             log.info("reads_number {}".format(read_number))
             sampling_reads(input_dir, output_dir, read_number, sample_number=20)
